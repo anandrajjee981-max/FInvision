@@ -41,7 +41,7 @@ const textY = useTransform(smoothProgress, [0, 1], [0, -250]);
         {/* BG IMAGE */}
         <motion.div 
           // style={{ filter: blurValue, scale: bgScale }}
-          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1762889285828-c7b09332daad?q=80&w=1932&auto=format&fit=crop')] bg-cover bg-center"
+          className="absolute inset-0 bg-[url('https://i.pinimg.com/originals/82/8e/f1/828ef1f45c33f05b8329dd93fffb89d5.gif')] bg-cover bg-center"
         />
 
         {/* OVERLAY for contrast */}
