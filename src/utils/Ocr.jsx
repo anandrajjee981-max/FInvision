@@ -130,7 +130,7 @@ const total = totalLines.length > 0
     <div className="text-white">
       {error && <p className="text-red-500">{error}</p>}
       {!error && progress < 100 && <p>Scanning: {progress}%</p>}
-      {!error && progress === 100 && <p>Done ✅</p>}
+      {!error && progress === 100 && <p>Done </p>}
       {note && (
         <Billchart 
           subtotal={note.subtotal} 

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FaImage, FaPlus, FaWallet, FaReceipt } from "react-icons/fa6";
 import Ocr from '../utils/Ocr';
-
+import { Userdatacontext } from '../context/UserContext';
+const data = useContext(Userdatacontext)
 const Addexpense = () => {
   const [expense, setExpense] = useState("");
   const [expenses, setExpenses] = useState([]);
