@@ -1,46 +1,46 @@
-import React, { createContext, useState } from 'react'
-export const Userdatacontext = createContext()
+// import React, { createContext, useState } from 'react'
+// export const Userdatacontext = createContext()
 
-const UserContext = (props) => {
-    const [expense, setexpense] = useState();
-    const [classify, setclassify] = useState();
-    const [stored, setstored] = useState([]);
+// const UserContext = (props) => {
+//     const [expense, setexpense] = useState();
+//     const [classify, setclassify] = useState();
+//     const [stored, setstored] = useState([]);
 
-const [expense, setexpense] = useState("");
-const [classify, setclassify] = useState("");
-const [stored, setstored] = useState([]);
+// const [expense, setexpense] = useState("");
+// const [classify, setclassify] = useState("");
+// const [stored, setstored] = useState([]);
 
-function addmanually(e) {
-  e.preventDefault();
+// function addmanually(e) {
+//   e.preventDefault();
 
-  if (!expense || !classify) return;
+//   if (!expense || !classify) return;
 
-  const newItem = {
-    expense: Number(expense),
-    classify
-  };
+//   const newItem = {
+//     expense: Number(expense),
+//     classify
+//   };
 
-  setstored(prev => [...prev, newItem]);
+//   setstored(prev => [...prev, newItem]);
 
-  setexpense("");
-  setclassify("");
-}
+//   setexpense("");
+//   setclassify("");
+// }
 
-  return (
-<Userdatacontext.Provider
-  value={{
-    expense,
-    classify,
-    stored,
-    setexpense,
-    setclassify,
-    addmanually
-  }}
->
+//   return (
+// <Userdatacontext.Provider
+//   value={{
+//     expense,
+//     classify,
+//     stored,
+//     setexpense,
+//     setclassify,
+//     addmanually
+//   }}
+// >
 
-{props.children}
-   </Userdatacontext.Provider>
-  )
-}
+// {props.children}
+//    </Userdatacontext.Provider>
+//   )
+// }
 
-export default UserContext
+// export default UserContext
