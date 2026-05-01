@@ -1,11 +1,13 @@
-import React, { useContext, useState } from 'react';
-import { FaPlus, FaReceipt, FaWallet, FaTag, FaIndianRupeeSign, FaArrowUpFromBracket, FaTrash } from "react-icons/fa6";
+import React, { useContext, useEffect, useState } from 'react';
+import { FaPlus, FaReceipt, FaWallet, FaTag, FaArrowUpFromBracket, FaTrash } from "react-icons/fa6";
 import Ocr from '../utils/Ocr';
 import { Userdatacontext } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const Addexpense = () => {
-  const { expense, setexpense, classify, setclassify, stored, addmanually } = useContext(Userdatacontext);
+  const { expense, setexpense, classify, setclassify, stored, addmanually, target, settarget } = useContext(Userdatacontext);
   const [preview, setpreview] = useState(null);
+  const navigate = useNavigate();
 
   const calculate = (e) => {
     const file = e.target.files[0];
@@ -13,8 +15,16 @@ const Addexpense = () => {
     const url = URL.createObjectURL(file);
     setpreview(url);
   };
-
-  const total = stored.reduce((acc, curr) => acc + Number(curr.expense), 0);
+  
+useEffect(() => {
+  return () => {
+    if (preview) URL.revokeObjectURL(preview);
+  };
+}, [preview]);
+ const total = stored.reduce((acc, curr) => {
+  return acc + (Number(curr.expense) || 0);
+}, 0);
+  const isOverBudget = target > 0 && total > target;
 
   return (
     <div className='bg-[#050505] w-full min-h-screen flex justify-center p-4 md:p-10 text-slate-100 font-sans selection:bg-blue-500/30'>
@@ -67,17 +77,56 @@ const Addexpense = () => {
         {/* --- RIGHT: DASHBOARD & HISTORY --- */}
         <div className='lg:col-span-7 flex flex-col gap-6'>
           
+          {/*  Target Setting Card */}
+          <div className='bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-4'>
+            <div className='flex items-center gap-4'>
+              <div className='p-3 bg-indigo-500/20 rounded-2xl'>
+                <FaTag className='text-indigo-400' />
+              </div>
+              <div>
+                <p className='text-[10px] font-bold text-slate-500 uppercase tracking-widest'>Daily Limit</p>
+                <h4 className='text-lg font-semibold'>Budget Target</h4>
+              </div>
+            </div>
+            <div className='relative w-full md:w-auto'>
+              <span className='absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold'>₹</span>
+              <input 
+                type='number' 
+                value={target} 
+                onChange={(e) => settarget(Number(e.target.value))}
+                placeholder="Set Target"
+                className='bg-black/40 border border-white/10 rounded-2xl py-3 pl-8 pr-4 w-full md:w-40 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-blue-400'
+              />
+            </div>
+          </div>
+
           {/* Header Stats */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div className='relative overflow-hidden bg-blue-600 p-8 rounded-[2.5rem] shadow-xl group'>
+            {/* Dynamic Expense Card */}
+            <div className={`relative overflow-hidden p-8 rounded-[2.5rem] shadow-xl group transition-all duration-500 ${isOverBudget ? 'bg-red-600' : 'bg-blue-600'}`}>
               <div className='absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all'></div>
-              <p className='text-blue-100 text-sm font-medium uppercase tracking-[0.2em] mb-2'>Current Balance</p>
+              <p className='text-white/70 text-sm font-medium uppercase tracking-[0.2em] mb-2'>
+                {isOverBudget ? "Budget Exceeded" : "Total Expense"}
+              </p>
               <h2 className='text-5xl font-black tracking-tighter flex items-center gap-1'>
-                <span className='text-3xl font-light opacity-70'>₹</span>{total.toLocaleString()}
+                <span className='text-3xl font-light opacity-70'>₹</span>
+                {total.toLocaleString()}
               </h2>
+              
+              {/* Mini Progress Bar */}
+              {target > 0 && (
+                <div className='mt-4 w-full bg-black/20 rounded-full h-1.5 overflow-hidden'>
+                  <div 
+                    className={`h-full transition-all duration-1000 ${isOverBudget ? 'bg-white' : 'bg-blue-300'}`}
+                    style={{ width: `${Math.min((total / target) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              )}
             </div>
 
+            {/* Manual Quick Add */}
             <div className='bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col justify-center'>
+              <p className='text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1'>Quick Add</p>
               <div className='flex gap-2 mb-3'>
                 <input
                   type='number'
@@ -111,10 +160,12 @@ const Addexpense = () => {
                <h3 className='text-xl font-bold flex items-center gap-3'>
                  History <span className='text-xs bg-white/10 px-2 py-1 rounded-md text-slate-400'>{stored.length}</span>
                </h3>
-               <button className='text-sm text-blue-400 font-medium'>View All</button>
+               <button onClick={() => navigate('/history')} className='text-sm text-blue-400 font-medium hover:text-blue-300 transition-colors'>
+                 View All
+               </button>
             </div>
 
-            <div className='flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar'>
+            <div className='flex flex-col gap-4 overflow-y-hidden max-h-[450px] pr-2 custom-scrollbar'>
               {stored.length > 0 ? (
                 [...stored].reverse().map((exp, i) => (
                   <div key={i} className='flex justify-between items-center bg-white/5 hover:bg-white/[0.08] p-5 rounded-[2rem] border border-white/[0.03] transition-all duration-300 transform hover:-translate-y-1'>
@@ -124,7 +175,7 @@ const Addexpense = () => {
                       </div>
                       <div>
                         <p className='font-bold text-slate-100 text-lg'>{exp.classify || 'Expense'}</p>
-                        <p className='text-xs font-medium text-slate-500 uppercase tracking-widest'>Yesterday • 4:20 PM</p>
+                        <p className='text-xs font-medium text-slate-500 uppercase tracking-widest'>Today • Recent</p>
                       </div>
                     </div>
                     <div className='text-right'>
@@ -145,7 +196,6 @@ const Addexpense = () => {
         </div>
       </div>
 
-      {/* Add this CSS to your global CSS file or a style tag */}
       <style dangerouslySetInnerHTML={{ __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 5px;
