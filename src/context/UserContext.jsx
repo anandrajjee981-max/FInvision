@@ -1,47 +1,43 @@
-import React, { createContext, useState } from 'react'
-export const Userdatacontext = createContext()
+import React, { createContext, useState } from 'react';
+
+export const Userdatacontext = createContext();
 
 const UserContext = (props) => {
-//     const [expense, setexpense] = useState();
-//     const [classify, setclassify] = useState();
-//     const [stored, setstored] = useState([]);
+  const [expense, setexpense] = useState("");
+  const [classify, setclassify] = useState("");
+  const [stored, setstored] = useState([]);
 
-// const [expense, setexpense] = useState("");
-// const [classify, setclassify] = useState("");
-// const [stored, setstored] = useState([]);
+  function addmanually(e) {
+    e.preventDefault();
 
-function addmanually(e) {
-  e.preventDefault();
+    if (!expense || !classify) return;
 
-  if (!expense || !classify) return;
+    setstored(prev => [
+      ...prev,
+      {
+        expense: Number(expense),
+        classify: classify
+      }
+    ]);
 
-  const newItem = {
-    expense: Number(expense),
-    classify
-  };
+    setexpense("");
+    setclassify("");
+  }
 
-  setstored(prev => [...prev, newItem]);
-
-  setexpense("");
-  setclassify("");
-}
-let a = 1
   return (
-<Userdatacontext.Provider
-  value={{
-    // expense,
-    // classify,
-    // stored,
-    // setexpense,
-    // setclassify,
-    // addmanually , 
-    a
-  }}
->
+    <Userdatacontext.Provider
+      value={{
+        expense,
+        setexpense,
+        classify,
+        setclassify,
+        stored,
+        addmanually
+      }}
+    >
+      {props.children}
+    </Userdatacontext.Provider>
+  );
+};
 
-{props.children}
-   </Userdatacontext.Provider>
-  )
-}
-
-export default UserContext
+export default UserContext;
