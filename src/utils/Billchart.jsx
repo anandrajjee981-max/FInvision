@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 
 const Billchart = ({ subtotal, total, tax }) => {
-  // Data ko filter kar rahe hain taaki null values chart kharab na karein
+  // Data ko filter kar rahe hain taaki null values chart kharab na karein 
   const data = [
     { name: "Subtotal", value: subtotal || 0, color: "#6366f1" },
     { name: "Tax", value: tax || 0, color: "#f43f5e" },
